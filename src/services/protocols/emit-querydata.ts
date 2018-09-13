@@ -3,7 +3,7 @@ import { ConnectionId } from "../../types/connection";
 import { ConnectionWrapper } from "../connection/wrapper";
 import {
   TConnectionStore,
-  TProtocolQueryResultEmitter,
+  TProtocolSubscriptionsEmitter,
   TContainer
 } from "../../types/di";
 import { ConnectionStoreService } from "../connection/store";
@@ -15,8 +15,6 @@ export class ProtocolsSubscriptionsEmitterService {
   /**
    * Inject dependencies
    */
-  @inject(TContainer)
-  private container!: Container;
   @inject(TConnectionStore)
   private connectionStore!: ConnectionStoreService;
 
@@ -41,13 +39,13 @@ export class ProtocolsSubscriptionsEmitterService {
     return result;
   }
 
-  constructor() {
+  constructor(@inject(TContainer) private container: Container) {
     this.protocols = Object.create(null);
     const supportedProtocols = [Protocols.V1.ID];
     supportedProtocols.forEach(
       protocol =>
         (this.protocols[protocol] = this.container.getNamed(
-          TProtocolQueryResultEmitter,
+          TProtocolSubscriptionsEmitter,
           protocol
         ))
     );

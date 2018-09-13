@@ -23,20 +23,15 @@ export const TWebsocketConnectionFactory = Symbol("WebsocketConnectionFactory");
 // export const TWebsocketProtocolFactory = Symbol("WebsocketProtocolFactory");
 
 // Protocols - these don't need to be in the DI? For testing maybe yes.
-export const TProtocolFactory = Symbol("TProtocolFactory");
-export const ProtocolTag = "Protocol";
-export const ProtocolTags = {
-  Handshake: Symbol("Default"),
-  V1: Symbol("Subscriber")
-};
+export const TProtocolFactory = Symbol("ProtocolFactory");
 export const TProtocolFactoryTag = Symbol("TProtocolFactoryTag");
 export const TProtocolHandshake = Symbol("ProtocolHandshake");
 export const TProtocolV1 = Symbol("ProtocolV1");
 
-export const TProtocolMessageEmitter = Symbol("TProtocolMessageEmitter");
-export const TProtocolMessageReceiver = Symbol("TProtocolMessageReceiver");
-export const TProtocolQueryResultEmitter = Symbol(
-  "TProtocolQueryResultEmitter"
+export const TProtocolMessageEmitter = Symbol("ProtocolMessageEmitter");
+export const TProtocolMessageReceiver = Symbol("ProtocolMessageReceiver");
+export const TProtocolSubscriptionsEmitter = Symbol(
+  "TProtocolSubscriptionsEmitter"
 );
 
 // Actions
@@ -53,8 +48,8 @@ export const TQueryPublishService = Symbol("QueryPublishService");
 export const TQueryExecuteService = Symbol("QueryExecuteService");
 
 // Sessions
-export const TIdentityMeta = Symbol("SessionMeta");
-export const TConnectionSubscriptions = Symbol("SessionSubscriptions");
+export const TIdentityMeta = Symbol("IdentityMeta");
+export const TConnectionSubscriptions = Symbol("ConnectionSubscriptions");
 export const TConnectionStore = Symbol("ConnectionStore");
 export const TConnectionWrapperFactory = Symbol("ConnectionWrapperFactory");
 export const TIdentityDataFactory = Symbol("SessionDataFactory");

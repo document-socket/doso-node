@@ -9,9 +9,10 @@ import { Message, Protocols } from "doso-protocol";
 
 // Modules
 import { ConnectionWrapper } from "../../connection/wrapper";
-import { inject, named } from "inversify";
+import { inject, named, injectable } from "inversify";
 import { TProtocolMessageEmitter } from "../../../types/di";
 
+@injectable()
 export class ProtocolReceiveHandshake implements IProtocolMessageReceiver {
   /**
    * Inject dependencies.

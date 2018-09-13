@@ -1,5 +1,5 @@
 import * as ejson from "ejson";
-import { inject, tagged, injectable } from "inversify";
+import { inject, tagged, injectable, named } from "inversify";
 import { Protocols, QueryId, Message } from "doso-protocol";
 
 // Types
@@ -16,7 +16,7 @@ import { ConnectionWrapper } from "../../connection/wrapper";
 export class ProtocolsSubscriptionsEmitterV1
   implements IProtocolSubscriptionsEmitter {
   @inject(TProtocolMessageEmitter)
-  @tagged("version", Protocols.V1.ID)
+  @named(Protocols.V1.ID)
   private messageEmitter!: IProtocolMessageEmitter;
 
   /**

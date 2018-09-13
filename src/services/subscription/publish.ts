@@ -1,4 +1,4 @@
-import { injectable, inject } from "inversify";
+import { injectable, inject, named } from "inversify";
 import * as Async from "async";
 
 // Types
@@ -6,13 +6,13 @@ import { QueryId } from "doso-protocol";
 import {
   TConnectionSubscriptions,
   TQueryExecuteService,
-  TProtocolQueryResultEmitter
+  TProtocolSubscriptionsEmitter
 } from "../../types/di";
 import { ConnectionId } from "../../types/connection";
 
 // Services
 import ConnectionSubscriptionsService from "../connection/subscriptions";
-import QueryExecute from "./execute";
+import QueryExecuteService from "./execute";
 import { ProtocolsSubscriptionsEmitterService } from "../protocols/emit-querydata";
 
 type Task = {
@@ -32,8 +32,9 @@ export default class QueryPublishService {
   @inject(TConnectionSubscriptions)
   private connectionSubscriptionsService!: ConnectionSubscriptionsService;
   @inject(TQueryExecuteService)
-  private executeQueryService!: QueryExecute;
-  @inject(TProtocolQueryResultEmitter)
+  private executeQueryService!: QueryExecuteService;
+  @inject(TProtocolSubscriptionsEmitter)
+  @named("root")
   private protocolQueryResultEmitter!: ProtocolsSubscriptionsEmitterService;
 
   /**

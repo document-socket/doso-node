@@ -38,6 +38,9 @@ export class ProtocolReceiveMessageService {
 
   constructor() {
     this.protocols = Object.create(null);
+  }
+
+  init() {
     const supportedProtocols = [Protocols.Handshake.ID, Protocols.V1.ID];
     supportedProtocols.forEach(
       protocol =>

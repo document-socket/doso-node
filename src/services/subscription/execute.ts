@@ -29,7 +29,7 @@ import {
  * and its tags will be maintained in Redis.
  */
 @injectable()
-export default class QueryExecute {
+export default class QueryExecuteService {
   /**
    * Resolve `queryId` into its Publication and QueryParams.
    */
@@ -70,7 +70,7 @@ export default class QueryExecute {
       throw new Error("No sessions");
     }
     // And pass it to the Publication alongside the params.
-    const session = this.sessionDataFactory.create(sessionId);
+    const session = this.identityDataFactory.create(sessionId);
     return (<PublicationPrivate>publication).execWithSessionData(
       queryParams,
       session
@@ -106,7 +106,7 @@ export default class QueryExecute {
     @inject(TConnectionSubscriptions)
     private sessionSubscriptionsService: ConnectionSubscriptionsService,
     @inject(TIdentityDataFactory)
-    private sessionDataFactory: IdentityDataFactoryService,
+    private identityDataFactory: IdentityDataFactoryService,
     @inject(TQueryTagsService) private queryTagsService: QueryTagsService
   ) {}
 

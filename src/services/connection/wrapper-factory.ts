@@ -1,4 +1,4 @@
-import { inject, injectable } from "inversify";
+import { inject, injectable, targetName, named } from "inversify";
 
 // Types
 import { TIdentityDataFactory, TProtocolMessageReceiver } from "../../types/di";
@@ -15,6 +15,7 @@ export class ConnectionWrapperFactoryService {
    * Inject Dependencies.
    */
   @inject(TProtocolMessageReceiver)
+  @named("root")
   private messageReceiver!: ProtocolReceiveMessageService;
 
   @inject(TIdentityDataFactory)

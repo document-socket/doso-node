@@ -16,7 +16,7 @@ export * from "./types/identity";
 export * from "./types/action";
 
 /**
- * Instantiate a new Rosa Server.
+ * Instantiate a new Document Socket Server.
  */
 export function doso(config: ConfigType) {
   const iocKernel = new Kernel(config);
