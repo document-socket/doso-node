@@ -30,14 +30,14 @@ export class ProtocolsSubscriptionsEmitterV1
     const chunksCount = Math.ceil(dataEJson.length / chunkSize);
     const messages: Message[] = [];
     for (let i = 0; i < chunksCount; i++) {
-      const payload: Protocols.V1.Server.WatchDataPayload = {
+      const payload: Protocols.V1.Server.SubscriptionDataPayload = {
         id: queryId,
         total: chunksCount,
         part: 0,
         stream: ""
       };
       const message = Protocols.V1.Server.messageFactory(
-        Protocols.V1.Server.Tokens.WatchData,
+        Protocols.V1.Server.Tokens.SubscriptionData,
         payload
       );
       message.payload.part = i + 1;

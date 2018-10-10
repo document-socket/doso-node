@@ -48,16 +48,16 @@ export class ProtocolReceiverV1 implements IProtocolMessageReceiver {
    */
   private async createNewIdentity(
     connection: ConnectionWrapper,
-    request: Protocols.V1.Client.SessionNewRequest
+    request: Protocols.V1.Client.IdentityCreateRequest
   ) {
     const newIdentity = await this.identityMetaService.createNewIdentity();
-    const payload: Protocols.V1.Server.SessionNewPayload = {
+    const payload: Protocols.V1.Server.IdentityCreatePayload = {
       version: Protocols.V1.ID,
       session: newIdentity.id,
       secret: newIdentity.secret
     };
     const response = Protocols.V1.Server.messageFactory(
-      Protocols.V1.Server.Tokens.SessionNew,
+      Protocols.V1.Server.Tokens.IdentityCreate,
       payload,
       request.requestId
     );
@@ -71,16 +71,16 @@ export class ProtocolReceiverV1 implements IProtocolMessageReceiver {
    */
   private async reuseIdentity(
     connection: ConnectionWrapper,
-    request: Protocols.V1.Client.SessionReuseRequest
+    request: Protocols.V1.Client.IdentityValidateRequest
   ): Promise<boolean> {
-    if (!request.payload.session) {
+    if (!request.payload.identity) {
       return false;
     }
 
     // Try to reuse the session...
-    const { session, signature = "", timestamp = 0 } = request.payload;
+    const { identity, signature = "", timestamp = 0 } = request.payload;
     const success = await this.identityMetaService.authenticate(
-      session,
+      identity,
       signature,
       timestamp
     );
@@ -89,8 +89,8 @@ export class ProtocolReceiverV1 implements IProtocolMessageReceiver {
     }
 
     // The above will raise an Error if session is invalid
-    const payload: Protocols.V1.Server.SessionReusePayload = {
-      session: session
+    const payload: Protocols.V1.Server.IdentityValidatePayload = {
+      identity
     };
     this.messageEmitter.emitError(connection, payload, request.requestId);
 
@@ -101,20 +101,20 @@ export class ProtocolReceiverV1 implements IProtocolMessageReceiver {
    * `connection` requests to subscribe to a publication defined in
    * `message`.
    */
-  private async watchRequest(
+  private async subscribeRequest(
     connection: ConnectionWrapper,
-    message: Protocols.V1.Client.WatchRequest
+    message: Protocols.V1.Client.SubscribeRequest
   ) {
     const queryId = await this.publicationSubscribeService.subscribe(
       connection,
       message.payload.name,
       message.payload.params
     );
-    const payload: Protocols.V1.Server.WatchPayload = {
+    const payload: Protocols.V1.Server.SubscribePayload = {
       id: queryId
     };
     const response = Protocols.V1.Server.messageFactory(
-      Protocols.V1.Server.Tokens.Watch,
+      Protocols.V1.Server.Tokens.Subscribe,
       payload,
       message.requestId ? message.requestId : 0
     );
@@ -125,20 +125,20 @@ export class ProtocolReceiverV1 implements IProtocolMessageReceiver {
    * `connection` requests to unsubscribe the query identified by
    * `message.payload.id`.
    */
-  private async unwatchRequest(
+  private async unsubscribeRequest(
     connection: ConnectionWrapper,
-    message: Protocols.V1.Client.UnwatchRequest
+    message: Protocols.V1.Client.UnsubscribeRequest
   ) {
     await this.queryUnsubscribeService.unsubscribe(
       connection.getConnectionId(),
       message.payload.id
     );
 
-    const payload: Protocols.V1.Server.UnwatchPayload = {
+    const payload: Protocols.V1.Server.UnsubscribePayload = {
       handle: message.payload.id
     };
     const response = Protocols.V1.Server.messageFactory(
-      Protocols.V1.Server.Tokens.Unwatch,
+      Protocols.V1.Server.Tokens.Unsubscribe,
       payload,
       message.requestId ? message.requestId : 0
     );
@@ -181,14 +181,14 @@ export class ProtocolReceiverV1 implements IProtocolMessageReceiver {
   ): { [key: string]: RequestMethod } {
     if (connection.getIdentityId()) {
       return {
-        [Protocols.V1.Client.Tokens.SessionNew]: this.createNewIdentity,
-        [Protocols.V1.Client.Tokens.SessionReuse]: this.reuseIdentity
+        [Protocols.V1.Client.Tokens.IdentityCreate]: this.createNewIdentity,
+        [Protocols.V1.Client.Tokens.IdentityValidate]: this.reuseIdentity
       };
     }
 
     return {
-      [Protocols.V1.Client.Tokens.Watch]: this.watchRequest,
-      [Protocols.V1.Client.Tokens.Unwatch]: this.unwatchRequest,
+      [Protocols.V1.Client.Tokens.Subscribe]: this.subscribeRequest,
+      [Protocols.V1.Client.Tokens.Unsubscribe]: this.unsubscribeRequest,
       [Protocols.V1.Client.Tokens.Exec]: this.execRequest
     };
   }
